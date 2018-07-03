@@ -8,17 +8,16 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef __BASLER_TOF_CAMERA_HPP
 #define __BASLER_TOF_CAMERA_HPP
 
-#include "i3ds/topic.hpp"
-#include "i3ds/publisher.hpp"
+#include <i3ds/topic.hpp>
+#include <i3ds/publisher.hpp>
 #include <i3ds/tof_camera_sensor.hpp>
 
 #include <memory>
 
-#include "basler_tof_interface.hpp"
+#include "basler_tof_wrapper.hpp"
 
 namespace i3ds
 {
@@ -61,11 +60,16 @@ private:
 
   const Parameters param_;
 
-  bool send_sample(unsigned char* image, unsigned long timestamp_us);
+  bool send_sample(const uint16_t* depth, const uint16_t* confidence, int width, int height);
 
   Publisher publisher_;
 
-  std::unique_ptr<Basler_ToF_Interface> cameraInterface;
+  double max_depth_;
+  double min_depth_;
+
+  bool region_enabled_;
+
+  mutable BaslerToFWrapper* camera_;
 };
 
 } // namespace i3ds

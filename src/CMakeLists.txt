@@ -24,7 +24,7 @@ set (BASLER_TOF_CXX_FLAGS
 
 set (SRCS
   basler_tof_camera.cpp
-  basler_tof_interface.cpp
+  basler_tof_wrapper.cpp
   )
 
 set (LIBS
