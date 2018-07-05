@@ -142,7 +142,11 @@ i3ds::BaslerToFCamera::do_deactivate()
 bool
 i3ds::BaslerToFCamera::is_sampling_supported(SampleCommand sample)
 {
-  // TODO: Check if max and min is the same as supported.
+
+  if (!param_.free_running)
+    {
+      throw i3ds::CommandError(error_other, "Period is not relevant in free-running mode");
+    }
 
   const float rate = 1.0e6 / sample.period;
   const float max_rate = camera_->maxTriggerRate();
