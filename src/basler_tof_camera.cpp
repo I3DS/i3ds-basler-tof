@@ -166,10 +166,6 @@ i3ds::BaslerToFCamera::handle_region(RegionService::Data& command)
     {
       PlanarRegion region = command.request.region;
 
-      camera_->setWidth(region.size_x);
-      camera_->setHeight(region.size_y);
-      camera_->setOffsetX(region.offset_x);
-      camera_->setOffsetY(region.offset_y);
     }
   else
     {
