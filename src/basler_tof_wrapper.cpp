@@ -46,6 +46,8 @@ BaslerToFWrapper::BaslerToFWrapper(std::string camera_name, Operation operation)
 #endif
 
   setEnum("ExposureAuto", "Continuous");
+  setFloat("Agility", 0.1);
+  setInt("Delay", 1);
 }
 
 BaslerToFWrapper::~BaslerToFWrapper()
