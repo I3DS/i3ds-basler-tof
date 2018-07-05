@@ -230,8 +230,8 @@ i3ds::BaslerToFCamera::handle_range(RangeService::Data& command)
 
   check_standby();
 
-  camera_->setMinDepth(command.request.min_depth);
-  camera_->setMaxDepth(command.request.max_depth);
+  camera_->setMinDepth((int64_t) (command.request.min_depth * 1000));
+  camera_->setMaxDepth((int64_t) (command.request.max_depth * 1000));
 }
 
 bool
