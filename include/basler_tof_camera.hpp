@@ -42,6 +42,10 @@ public:
   virtual double range_min_depth() const;
   virtual double range_max_depth() const;
 
+  virtual double range_min_depth_lower_limit() const;
+  virtual double range_max_depth_upper_limit() const;
+
+
   virtual bool is_sampling_supported(SampleCommand sample);
 
 protected:

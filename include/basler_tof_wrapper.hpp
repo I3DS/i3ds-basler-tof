@@ -56,9 +56,12 @@ public:
 
   int64_t getMaxDepth();
   void setMaxDepth(int64_t depth);
+  int64_t getMaxDepth_upper_limit();
 
   int64_t getMinDepth();
   void setMinDepth(int64_t depth);
+  int64_t getMinDepth_lower_limit();
+
 
 private:
 
