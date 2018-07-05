@@ -257,7 +257,6 @@ void
 BaslerToFWrapper::Start()
 {
   running_ = true;
-  grabbed_ = 0;
   sampler_ = std::thread(&BaslerToFWrapper::SampleLoop, this);
 }
 
@@ -287,7 +286,6 @@ BaslerToFWrapper::HandleResult(GrabResult result, BufferParts parts)
       return false; // Indicate to stop acquisition
     }
 
-  grabbed_++;
 
   if (result.status == GrabResult::Ok)
     {

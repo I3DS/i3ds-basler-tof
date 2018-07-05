@@ -84,8 +84,6 @@ private:
 
   CToFCamera camera_;
 
-  int grabbed_;
-
   std::thread sampler_;
   bool running_;
 };
