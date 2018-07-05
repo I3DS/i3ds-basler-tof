@@ -58,7 +58,7 @@ int main(int argc, char** argv)
 
   ("verbose,v", "Print verbose output")
   ("quite,q", "Quiet ouput")
-  ("print", "Print the camera configuration")
+  ("print,p", "Print the camera configuration")
   ;
 
   po::variables_map vm;
