@@ -36,7 +36,15 @@ BaslerToFWrapper::BaslerToFWrapper(std::string camera_name, Operation operation)
   setSelector("Intensity", false);
   setSelector("Confidence", true);
 
+  //#define HDR // vs Standard
+//#define HDR // vs Standard
+#ifndef HDR
+  setEnum("ProcessingMode", "Standard");
+#else // single
   // TODO: Add option for HDR?
+  setEnum("ProcessingMode", "Hdr")
+#endif
+
   setEnum("ExposureAuto", "Continuous");
 }
 
@@ -247,6 +255,22 @@ BaslerToFWrapper::getMinDepth()
   return getInt("DepthMin");
 }
 
+
+int64_t
+BaslerToFWrapper::getMinDepth_lower_limit()
+{
+  return  minInt("DepthMin");
+}
+
+int64_t
+BaslerToFWrapper::getMaxDepth_upper_limit()
+{
+  return  maxInt("DepthMax");
+}
+
+
+
+
 void
 BaslerToFWrapper::setMinDepth(int64_t depth)
 {
@@ -281,9 +305,13 @@ BaslerToFWrapper::SampleLoop()
 bool
 BaslerToFWrapper::HandleResult(GrabResult result, BufferParts parts)
 {
+  BOOST_LOG_TRIVIAL(info) << "HandleResult()";
+
+
   if (result.status == GrabResult::Timeout)
     {
-      return false; // Indicate to stop acquisition
+      BOOST_LOG_TRIVIAL(info) << "Timeout waiting for image";
+      return running_; // Just continue and wait for another image.
     }
 
 
