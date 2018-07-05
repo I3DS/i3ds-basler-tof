@@ -9,6 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "basler_tof_wrapper.hpp"
+#include <exception>
+
 
 // TODO: Should be configured in CMake
 #define GENICAM_GENTL64_PATH "/opt/BaslerToF/lib64/gentlproducer/gtl"
@@ -27,7 +29,7 @@ BaslerToFWrapper::BaslerToFWrapper(std::string camera_name, Operation operation)
   setenv("GENICAM_GENTL64_PATH", GENICAM_GENTL64_PATH, 1);
 
   CToFCamera::InitProducer();
-
+try{
   camera_.Open(UserDefinedName, camera_name);
 
   // These are fixed settings for I3DS.
@@ -48,6 +50,22 @@ BaslerToFWrapper::BaslerToFWrapper(std::string camera_name, Operation operation)
   setEnum("ExposureAuto", "Continuous");
   setFloat("Agility", 0.1);
   setInt("Delay", 1);
+
+  }
+  catch (const GenICam::GenericException& e)
+     {
+       if (camera_.IsOpen())
+           {
+             camera_.Close();
+           }
+
+       if (CToFCamera::IsProducerInitialized())
+	 {
+	   CToFCamera::TerminateProducer();   // Won't throw any exceptions
+	 }
+       throw e;
+     }
+
 }
 
 BaslerToFWrapper::~BaslerToFWrapper()
