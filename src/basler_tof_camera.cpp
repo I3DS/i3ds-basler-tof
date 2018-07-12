@@ -54,11 +54,13 @@ PlanarRegion
 i3ds::BaslerToFCamera::region() const
 {
   PlanarRegion region;
-
+  BOOST_LOG_TRIVIAL(info) << "Check region";
   region.offset_x = (T_UInt16) camera_->getOffsetX();
   region.offset_y = (T_UInt16) camera_->getOffsetY();
   region.size_x = (T_UInt16) camera_->getWidth();
   region.size_y = (T_UInt16) camera_->getHeight();
+
+  BOOST_LOG_TRIVIAL(info) << "Check region"  <<  region.offset_x ;
 
   return region;
 }
@@ -102,7 +104,20 @@ i3ds::BaslerToFCamera::do_activate()
       auto operation = std::bind(&i3ds::BaslerToFCamera::send_sample, this, _1, _2, _3, _4);
 
       camera_ = new BaslerToFWrapper(param_.camera_name, operation);
-    }
+      if (
+	  (camera_->Width.GetValue() == camera_->SensorWidth.GetValue()) &&
+	  (camera_->Height.GetValue() == camera_->SensorHeight.GetValue()) &&
+	  (camera_->OffsetX.GetValue() == 0 ) &&
+	  (camera_->OffsetY.GetValue() == 0 )
+	 )
+	{
+	  region_enabled_ = false;
+	}
+      else
+	{
+	  region_enabled_ = true;
+	}
+
   catch (const GenICam::GenericException& e)
     {
       if (camera_)
