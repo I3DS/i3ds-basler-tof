@@ -122,6 +122,7 @@ i3ds::BaslerToFCamera::do_activate()
     {
       if (camera_)
         {
+	  BOOST_LOG_TRIVIAL(info) << "Camera deinit";
           delete camera_;
           camera_ = nullptr;
         }
@@ -259,21 +260,8 @@ i3ds::BaslerToFCamera::handle_range(RangeService::Data& command)
   BOOST_LOG_TRIVIAL(info) << "handle_range()";
 
   check_standby();
-  BOOST_LOG_TRIVIAL(info) << "command.request.max_depth: " << command.request.max_depth;
-  BOOST_LOG_TRIVIAL(info) << "command.request.min_depth " << command.request.min_depth;
-  BOOST_LOG_TRIVIAL(info) << "camera_->getMaxDepth()  " << camera_->getMaxDepth();
-  BOOST_LOG_TRIVIAL(info) << "camera_->getMinDepth()" << camera_->getMinDepth();
-  BOOST_LOG_TRIVIAL(info) << "range_min_depth()" << range_min_depth();
-  BOOST_LOG_TRIVIAL(info) << "range_max_depth()" << range_max_depth();
 
-  BOOST_LOG_TRIVIAL(info) << "range_min_depth_lower_limit()" << range_min_depth_lower_limit();
-  BOOST_LOG_TRIVIAL(info) << "range_max_depth_upper_limit()" <<range_max_depth_upper_limit();
-
-
-
-
-
-
+  // Check input parameters
   if ( command.request.min_depth < range_min_depth_lower_limit())
     {
       throw i3ds::CommandError(error_other, "Minimum depth must be greater than " + std::to_string(range_min_depth_lower_limit()) + "[m]");
