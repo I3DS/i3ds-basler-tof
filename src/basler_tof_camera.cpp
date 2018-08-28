@@ -205,6 +205,15 @@ i3ds::BaslerToFCamera::handle_region(RegionService::Data& command)
       PlanarRegion region = command.request.region;
 
       // Parameter checks
+      if((region.size_x % 2) || (region.size_y % 2 ) ||
+	 (region.offset_x % 2) || (region.offset_y % 2)
+	 )
+	{
+	  throw i3ds::CommandError(error_value, "Region sizes and offsets have to be a even number.");
+	}
+
+
+
       if ( (region.size_x == 0) || (region.size_y == 0) )
 	{
 	  throw i3ds::CommandError(error_value, "Region size (width or height) can not be zero");
@@ -218,6 +227,7 @@ i3ds::BaslerToFCamera::handle_region(RegionService::Data& command)
 						 std::to_string(camera_->SensorWidth())
 	  );
 	}
+
       if ( (region.size_y + region.offset_y) > ((unsigned) camera_->SensorHeight()) )
 	{
 	  throw i3ds::CommandError(error_value, "Set_region height + offset_y > maximal height : " +
