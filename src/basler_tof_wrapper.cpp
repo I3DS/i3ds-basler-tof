@@ -162,25 +162,25 @@ BaslerToFWrapper::setSelector(std::string component, bool enable)
 }
 
 int64_t
-BaslerToFWrapper::getWidth()
+BaslerToFWrapper::Width()
 {
   return getInt("Width");
 }
 
 int64_t
-BaslerToFWrapper::getHeight()
+BaslerToFWrapper::Height()
 {
   return getInt("Height");
 }
 
 int64_t
-BaslerToFWrapper::getOffsetX()
+BaslerToFWrapper::OffsetX()
 {
   return getInt("OffsetX");
 }
 
 int64_t
-BaslerToFWrapper::getOffsetY()
+BaslerToFWrapper::OffsetY()
 {
   return getInt("OffsetY");
 }
@@ -210,13 +210,13 @@ BaslerToFWrapper::setOffsetY(int64_t value)
 }
 
 int64_t
-BaslerToFWrapper::maxWidth()
+BaslerToFWrapper::SensorWidth()
 {
   return maxInt("Width");
 }
 
 int64_t
-BaslerToFWrapper::maxHeight()
+BaslerToFWrapper::SensorHeight()
 {
   return maxInt("Height");
 }

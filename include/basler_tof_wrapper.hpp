@@ -33,13 +33,13 @@ public:
   void Start();
   void Stop();
 
-  int64_t getWidth();
-  int64_t getHeight();
-  int64_t getOffsetX();
-  int64_t getOffsetY();
+  int64_t Width();     // getWidth();
+  int64_t Height();    // getHeight();
+  int64_t OffsetX();   // getOffsetX();
+  int64_t OffsetY();   // getOffsetY();
 
-  int64_t maxWidth();
-  int64_t maxHeight();
+  int64_t SensorWidth();  // maxWidth();
+  int64_t SensorHeight(); // maxHeight();
 
   void setWidth(int64_t value);
   void setHeight(int64_t value);

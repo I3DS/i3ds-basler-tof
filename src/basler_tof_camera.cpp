@@ -55,10 +55,10 @@ i3ds::BaslerToFCamera::region() const
 {
   PlanarRegion region;
   BOOST_LOG_TRIVIAL(info) << "Check region";
-  region.offset_x = (T_UInt16) camera_->getOffsetX();
-  region.offset_y = (T_UInt16) camera_->getOffsetY();
-  region.size_x = (T_UInt16) camera_->getWidth();
-  region.size_y = (T_UInt16) camera_->getHeight();
+  region.offset_x = (T_UInt16) camera_->OffsetX();
+  region.offset_y = (T_UInt16) camera_->OffsetY();
+  region.size_x = (T_UInt16) camera_->Width();
+  region.size_y = (T_UInt16) camera_->Height();
 
   BOOST_LOG_TRIVIAL(info) << "Check region"  <<  region.offset_x ;
 
@@ -105,10 +105,17 @@ i3ds::BaslerToFCamera::do_activate()
 
       camera_ = new BaslerToFWrapper(param_.camera_name, operation);
       if (
+	  (camera_->Width() == camera_->SensorWidth()) &&
+	  (camera_->Height() == camera_->SensorHeight()) &&
+	  (camera_->OffsetX() == 0 ) &&
+	  (camera_->OffsetY() == 0 )
+	  /*
 	  (camera_->Width.GetValue() == camera_->SensorWidth.GetValue()) &&
 	  (camera_->Height.GetValue() == camera_->SensorHeight.GetValue()) &&
 	  (camera_->OffsetX.GetValue() == 0 ) &&
 	  (camera_->OffsetY.GetValue() == 0 )
+	  */
+
 	 )
 	{
 	  region_enabled_ = false;
@@ -117,7 +124,7 @@ i3ds::BaslerToFCamera::do_activate()
 	{
 	  region_enabled_ = true;
 	}
-
+    }
   catch (const GenICam::GenericException& e)
     {
       if (camera_)
@@ -203,25 +210,25 @@ i3ds::BaslerToFCamera::handle_region(RegionService::Data& command)
 	  throw i3ds::CommandError(error_value, "Region size (width or height) can not be zero");
 	}
 
-      if ( (region.size_x + region.offset_x) > ((unsigned) camera_->maxWidth()) )
+      if ( (region.size_x + region.offset_x) > ((unsigned) camera_->SensorWidth()) )
 	{
 	  throw i3ds::CommandError(error_value, "Set_region width + offset_x > maximal width : " +
 						 std::to_string((region.size_x + region.offset_x)) +
 						 ">" +
-						 std::to_string(camera_->maxWidth())
+						 std::to_string(camera_->SensorWidth())
 	  );
 	}
-      if ( (region.size_y + region.offset_y) > ((unsigned) camera_->maxHeight()) )
+      if ( (region.size_y + region.offset_y) > ((unsigned) camera_->SensorHeight()) )
 	{
 	  throw i3ds::CommandError(error_value, "Set_region height + offset_y > maximal height : " +
 						 std::to_string((region.size_x + region.offset_x)) +
 						 ">" +
-						 std::to_string(camera_->maxHeight())
+						 std::to_string(camera_->SensorHeight())
 	  );
 	}
 
       // Decrease first, increase afterwards
-      if (region.size_x > ((unsigned) camera_->getWidth()) )
+      if (region.size_x > ((unsigned) camera_->Width()) )
 	{
 	  camera_->setOffsetX(region.offset_x);
 	  camera_->setWidth(region.size_x);
@@ -232,7 +239,7 @@ i3ds::BaslerToFCamera::handle_region(RegionService::Data& command)
 	  camera_->setOffsetX(region.offset_x);
 	}
 
-      if (region.size_y > ((unsigned) camera_->getHeight()) )
+      if (region.size_y > ((unsigned) camera_->Height()) )
 	{
 	  camera_->setOffsetY(region.offset_y);
 	  camera_->setHeight(region.size_y);
@@ -247,8 +254,8 @@ i3ds::BaslerToFCamera::handle_region(RegionService::Data& command)
     {
       camera_->setOffsetX(0);
       camera_->setOffsetY(0);
-      camera_->setWidth(camera_->maxWidth());
-      camera_->setHeight(camera_->maxHeight());
+      camera_->setWidth(camera_->SensorWidth());
+      camera_->setHeight(camera_->SensorHeight());
     }
 
   region_enabled_ = command.request.enable;
