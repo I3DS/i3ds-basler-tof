@@ -231,7 +231,7 @@ i3ds::BaslerToFCamera::handle_region(RegionService::Data& command)
       if ( (region.size_y + region.offset_y) > ((unsigned) camera_->SensorHeight()) )
 	{
 	  throw i3ds::CommandError(error_value, "Set_region height + offset_y > maximal height : " +
-						 std::to_string((region.size_x + region.offset_x)) +
+						 std::to_string((region.size_y + region.offset_y)) +
 						 ">" +
 						 std::to_string(camera_->SensorHeight())
 	  );
