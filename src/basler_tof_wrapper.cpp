@@ -23,334 +23,334 @@ using namespace GenTLConsumerImplHelper;
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 
-BaslerToFWrapper::BaslerToFWrapper(std::string camera_name, Operation operation)
-  : operation_(operation)
+BaslerToFWrapper::BaslerToFWrapper ( std::string camera_name, Operation operation )
+    : operation_ ( operation )
 {
-  setenv("GENICAM_GENTL64_PATH", GENICAM_GENTL64_PATH, 1);
+    setenv ( "GENICAM_GENTL64_PATH", GENICAM_GENTL64_PATH, 1 );
 
-  CToFCamera::InitProducer();
-try{
-  camera_.Open(UserDefinedName, camera_name);
+    CToFCamera::InitProducer();
+    try
+    {
+        camera_.Open ( UserDefinedName, camera_name );
 
-  // These are fixed settings for I3DS.
-  setSelector("Range", true);
-  setEnum("PixelFormat", "Coord3D_C16");
-  setSelector("Intensity", false);
-  setSelector("Confidence", true);
+        // These are fixed settings for I3DS.
+        setSelector ( "Range", true );
+        setEnum ( "PixelFormat", "Coord3D_C16" );
+        setSelector ( "Intensity", false );
+        setSelector ( "Confidence", true );
 
-  //#define HDR // vs Standard
+        //#define HDR // vs Standard
 //#define HDR // vs Standard
 #ifndef HDR
-  setEnum("ProcessingMode", "Standard");
+        setEnum ( "ProcessingMode", "Standard" );
 #else // single
-  // TODO: Add option for HDR?
-  setEnum("ProcessingMode", "Hdr")
+        // TODO: Add option for HDR?
+        setEnum ( "ProcessingMode", "Hdr" )
 #endif
 
-  setEnum("ExposureAuto", "Continuous");
-  setFloat("Agility", 0.1);
-  setInt("Delay", 1);
+        setEnum ( "ExposureAuto", "Continuous" );
+        setFloat ( "Agility", 0.1 );
+        setInt ( "Delay", 1 );
 
-  }
-  catch (const GenICam::GenericException& e)
-     {
-       if (camera_.IsOpen())
-           {
-             camera_.Close();
-           }
+    }
+    catch ( const GenICam::GenericException &e )
+    {
+        if ( camera_.IsOpen() )
+        {
+            camera_.Close();
+        }
 
-       if (CToFCamera::IsProducerInitialized())
-	 {
-	   CToFCamera::TerminateProducer();   // Won't throw any exceptions
-	 }
-       throw e;
-     }
+        if ( CToFCamera::IsProducerInitialized() )
+        {
+            CToFCamera::TerminateProducer();   // Won't throw any exceptions
+        }
+        throw e;
+    }
 
 }
 
 BaslerToFWrapper::~BaslerToFWrapper()
 {
-  if (camera_.IsOpen())
+    if ( camera_.IsOpen() )
     {
-      camera_.Close();
+        camera_.Close();
     }
 
-  if (CToFCamera::IsProducerInitialized())
+    if ( CToFCamera::IsProducerInitialized() )
     {
-      CToFCamera::TerminateProducer();   // Won't throw any exceptions
+        CToFCamera::TerminateProducer();   // Won't throw any exceptions
     }
 }
 
 std::string
-BaslerToFWrapper::getEnum(const char* name)
+BaslerToFWrapper::getEnum ( const char *name )
 {
-  GenApi::CEnumerationPtr ptr(camera_.GetParameter(name));
-  return std::string(ptr->ToString());
+    GenApi::CEnumerationPtr ptr ( camera_.GetParameter ( name ) );
+    return std::string ( ptr->ToString() );
 }
 
 void
-BaslerToFWrapper::setEnum(const char* name, std::string value)
+BaslerToFWrapper::setEnum ( const char *name, std::string value )
 {
-  GenApi::CEnumerationPtr ptr(camera_.GetParameter(name));
-  ptr->FromString(value.c_str());
+    GenApi::CEnumerationPtr ptr ( camera_.GetParameter ( name ) );
+    ptr->FromString ( value.c_str() );
 }
 
 int64_t
-BaslerToFWrapper::getInt(const char* name)
+BaslerToFWrapper::getInt ( const char *name )
 {
-  GenApi::CIntegerPtr ptr(camera_.GetParameter(name));
-  return ptr->GetValue();
+    GenApi::CIntegerPtr ptr ( camera_.GetParameter ( name ) );
+    return ptr->GetValue();
 }
 
 int64_t
-BaslerToFWrapper::minInt(const char* name)
+BaslerToFWrapper::minInt ( const char *name )
 {
-  GenApi::CIntegerPtr ptr(camera_.GetParameter(name));
-  return ptr->GetMin();
+    GenApi::CIntegerPtr ptr ( camera_.GetParameter ( name ) );
+    return ptr->GetMin();
 }
 
 int64_t
-BaslerToFWrapper::maxInt(const char* name)
+BaslerToFWrapper::maxInt ( const char *name )
 {
-  GenApi::CIntegerPtr ptr(camera_.GetParameter(name));
-  return ptr->GetMax();
+    GenApi::CIntegerPtr ptr ( camera_.GetParameter ( name ) );
+    return ptr->GetMax();
 }
 
 void
-BaslerToFWrapper::setInt(const char* name, int64_t value)
+BaslerToFWrapper::setInt ( const char *name, int64_t value )
 {
-  GenApi::CIntegerPtr ptr(camera_.GetParameter(name));
-  ptr->SetValue(value);
+    GenApi::CIntegerPtr ptr ( camera_.GetParameter ( name ) );
+    ptr->SetValue ( value );
 }
 
 float
-BaslerToFWrapper::getFloat(const char* name)
+BaslerToFWrapper::getFloat ( const char *name )
 {
-  GenApi::CFloatPtr ptr(camera_.GetParameter(name));
-  return ptr->GetValue();
+    GenApi::CFloatPtr ptr ( camera_.GetParameter ( name ) );
+    return ptr->GetValue();
 }
 
 float
-BaslerToFWrapper::minFloat(const char* name)
+BaslerToFWrapper::minFloat ( const char *name )
 {
-  GenApi::CFloatPtr ptr(camera_.GetParameter(name));
-  return ptr->GetMin();
+    GenApi::CFloatPtr ptr ( camera_.GetParameter ( name ) );
+    return ptr->GetMin();
 }
 
 float
-BaslerToFWrapper::maxFloat(const char* name)
+BaslerToFWrapper::maxFloat ( const char *name )
 {
-  GenApi::CFloatPtr ptr(camera_.GetParameter(name));
-  return ptr->GetMax();
+    GenApi::CFloatPtr ptr ( camera_.GetParameter ( name ) );
+    return ptr->GetMax();
 }
 
 void
-BaslerToFWrapper::setFloat(const char* name, float value)
+BaslerToFWrapper::setFloat ( const char *name, float value )
 {
-  GenApi::CFloatPtr ptr(camera_.GetParameter(name));
-  ptr->SetValue(value);
+    GenApi::CFloatPtr ptr ( camera_.GetParameter ( name ) );
+    ptr->SetValue ( value );
 }
 
 void
-BaslerToFWrapper::setSelector(std::string component, bool enable)
+BaslerToFWrapper::setSelector ( std::string component, bool enable )
 {
-  GenApi::CEnumerationPtr ptrSelector = camera_.GetParameter("ComponentSelector");
-  GenApi::CBooleanPtr ptrEnable = camera_.GetParameter("ComponentEnable");
+    GenApi::CEnumerationPtr ptrSelector = camera_.GetParameter ( "ComponentSelector" );
+    GenApi::CBooleanPtr ptrEnable = camera_.GetParameter ( "ComponentEnable" );
 
-  ptrSelector->FromString(component.c_str());
-  ptrEnable->SetValue(enable);
+    ptrSelector->FromString ( component.c_str() );
+    ptrEnable->SetValue ( enable );
 }
 
 int64_t
 BaslerToFWrapper::Width()
 {
-  return getInt("Width");
+    return getInt ( "Width" );
 }
 
 int64_t
 BaslerToFWrapper::Height()
 {
-  return getInt("Height");
+    return getInt ( "Height" );
 }
 
 int64_t
 BaslerToFWrapper::OffsetX()
 {
-  return getInt("OffsetX");
+    return getInt ( "OffsetX" );
 }
 
 int64_t
 BaslerToFWrapper::OffsetY()
 {
-  return getInt("OffsetY");
+    return getInt ( "OffsetY" );
 }
 
 void
-BaslerToFWrapper::setWidth(int64_t value)
+BaslerToFWrapper::setWidth ( int64_t value )
 {
-  setInt("Width", value);
+    setInt ( "Width", value );
 }
 
 void
-BaslerToFWrapper::setHeight(int64_t value)
+BaslerToFWrapper::setHeight ( int64_t value )
 {
-  setInt("Height", value);
+    setInt ( "Height", value );
 }
 
 void
-BaslerToFWrapper::setOffsetX(int64_t value)
+BaslerToFWrapper::setOffsetX ( int64_t value )
 {
-  setInt("OffsetX", value);
+    setInt ( "OffsetX", value );
 }
 
 void
-BaslerToFWrapper::setOffsetY(int64_t value)
+BaslerToFWrapper::setOffsetY ( int64_t value )
 {
-  setInt("OffsetY", value);
+    setInt ( "OffsetY", value );
 }
 
 int64_t
 BaslerToFWrapper::SensorWidth()
 {
-  return maxInt("Width");
+    return maxInt ( "Width" );
 }
 
 int64_t
 BaslerToFWrapper::SensorHeight()
 {
-  return maxInt("Height");
+    return maxInt ( "Height" );
 }
 
 float
 BaslerToFWrapper::getTriggerRate()
 {
-  return getFloat("AcquisitionFrameRate");
+    return getFloat ( "AcquisitionFrameRate" );
 }
 
 float
 BaslerToFWrapper::minTriggerRate()
 {
-  return minFloat("AcquisitionFrameRate");
+    return minFloat ( "AcquisitionFrameRate" );
 }
 
 float
 BaslerToFWrapper::maxTriggerRate()
 {
-  return maxFloat("AcquisitionFrameRate");
+    return maxFloat ( "AcquisitionFrameRate" );
 }
 
 void
-BaslerToFWrapper::setTriggerRate(float rate)
+BaslerToFWrapper::setTriggerRate ( float rate )
 {
-  setFloat("AcquisitionFrameRate", rate);
+    setFloat ( "AcquisitionFrameRate", rate );
 }
 
 void
-BaslerToFWrapper::setTriggerMode(bool enable)
+BaslerToFWrapper::setTriggerMode ( bool enable )
 {
-  setEnum("TriggerMode", enable ? "On" : "Off");
+    setEnum ( "TriggerMode", enable ? "On" : "Off" );
 }
 
 void
-BaslerToFWrapper::setTriggerSource(std::string line)
+BaslerToFWrapper::setTriggerSource ( std::string line )
 {
-  setEnum("TriggerSource", line);
+    setEnum ( "TriggerSource", line );
 }
 
 int64_t
 BaslerToFWrapper::getMaxDepth()
 {
-  return getInt("DepthMax");
+    return getInt ( "DepthMax" );
 }
 
 void
-BaslerToFWrapper::setMaxDepth(int64_t depth)
+BaslerToFWrapper::setMaxDepth ( int64_t depth )
 {
-  setInt("DepthMax", depth);
+    setInt ( "DepthMax", depth );
 }
 
 int64_t
 BaslerToFWrapper::getMinDepth()
 {
-  return getInt("DepthMin");
+    return getInt ( "DepthMin" );
 }
 
 
 int64_t
 BaslerToFWrapper::getMinDepth_lower_limit()
 {
-  return  minInt("DepthMin");
+    return  minInt ( "DepthMin" );
 }
 
 int64_t
 BaslerToFWrapper::getMaxDepth_upper_limit()
 {
-  return  maxInt("DepthMax");
+    return  maxInt ( "DepthMax" );
 }
 
 
 
 
 void
-BaslerToFWrapper::setMinDepth(int64_t depth)
+BaslerToFWrapper::setMinDepth ( int64_t depth )
 {
-  setInt("DepthMin", depth);
+    setInt ( "DepthMin", depth );
 }
 
 void
 BaslerToFWrapper::Start()
 {
-  running_ = true;
-  sampler_ = std::thread(&BaslerToFWrapper::SampleLoop, this);
+    running_ = true;
+    sampler_ = std::thread ( &BaslerToFWrapper::SampleLoop, this );
 }
 
 void
 BaslerToFWrapper::Stop()
 {
-  running_ = false;
+    running_ = false;
 
-  if (sampler_.joinable())
+    if ( sampler_.joinable() )
     {
-      sampler_.join();
+        sampler_.join();
     }
 }
 
 void
 BaslerToFWrapper::SampleLoop()
 {
-  // Start grabbing with buffer size 15 and 500 ms timeout.
-  camera_.GrabContinuous(15, 500, this, &BaslerToFWrapper::HandleResult);
+    // Start grabbing with buffer size 15 and 500 ms timeout.
+    camera_.GrabContinuous ( 15, 500, this, &BaslerToFWrapper::HandleResult );
 }
 
 bool
-BaslerToFWrapper::HandleResult(GrabResult result, BufferParts parts)
+BaslerToFWrapper::HandleResult ( GrabResult result, BufferParts parts )
 {
-  BOOST_LOG_TRIVIAL(info) << "HandleResult()";
+    BOOST_LOG_TRIVIAL ( info ) << "HandleResult()";
 
 
-  if (result.status == GrabResult::Timeout)
+    if ( result.status == GrabResult::Timeout )
     {
-      BOOST_LOG_TRIVIAL(info) << "Timeout waiting for image";
-      return running_; // Just continue and wait for another image.
+        BOOST_LOG_TRIVIAL ( info ) << "Timeout waiting for image";
+        return running_; // Just continue and wait for another image.
     }
 
 
-  if (result.status == GrabResult::Ok)
+    if ( result.status == GrabResult::Ok )
     {
-      const int width = (int) parts[0].width;
-      const int height = (int) parts[0].height;
-      const uint16_t* depth = (uint16_t*) parts[0].pData;
-      const uint16_t* confidence = (uint16_t*) parts[1].pData;
+        const int width = ( int ) parts[0].width;
+        const int height = ( int ) parts[0].height;
+        const uint16_t *depth = ( uint16_t * ) parts[0].pData;
+        const uint16_t *confidence = ( uint16_t * ) parts[1].pData;
 
-      if (parts[0].partType != Range || parts[1].partType != Confidence)
-	{
-	  BOOST_LOG_TRIVIAL(info) << "Invalid configuration of measurement";
-	  throw std::logic_error("Invalid configuration of measurement");
-	}
+        if ( parts[0].partType != Range || parts[1].partType != Confidence )
+        {
+            BOOST_LOG_TRIVIAL ( info ) << "Invalid configuration of measurement";
+            throw std::logic_error ( "Invalid configuration of measurement" );
+        }
 
 
-      operation_(depth, confidence, width, height);
+        operation_ ( depth, confidence, width, height );
     }
-
-  return running_;
+    return running_;
 }

@@ -19,62 +19,63 @@
 
 #include "basler_tof_wrapper.hpp"
 
+
 namespace i3ds
 {
 
-class BaslerToFCamera : public ToFCamera
-{
-public:
+    class BaslerToFCamera : public ToFCamera
+    {
+        public:
 
-  struct Parameters
-  {
-    std::string camera_name;
-    bool free_running;
-  };
+            struct Parameters
+            {
+                std::string camera_name;
+                bool free_running;
+            };
 
-  BaslerToFCamera(Context::Ptr context, NodeID id, Parameters param);
-  virtual ~BaslerToFCamera();
+            BaslerToFCamera ( Context::Ptr context, NodeID id, Parameters param );
+            virtual ~BaslerToFCamera();
 
-  // Getters.
-  virtual bool region_enabled() const;
-  virtual PlanarRegion region() const;
+            // Getters.
+            virtual bool region_enabled() const;
+            virtual PlanarRegion region() const;
 
-  virtual double range_min_depth() const;
-  virtual double range_max_depth() const;
+            virtual double range_min_depth() const;
+            virtual double range_max_depth() const;
 
-  virtual double range_min_depth_lower_limit() const;
-  virtual double range_max_depth_upper_limit() const;
+            virtual double range_min_depth_lower_limit() const;
+            virtual double range_max_depth_upper_limit() const;
 
 
-  virtual bool is_sampling_supported(SampleCommand sample);
+            virtual bool is_sampling_supported ( SampleCommand sample );
 
-protected:
+        protected:
 
-  // Actions.
-  virtual void do_activate();
-  virtual void do_start();
-  virtual void do_stop();
-  virtual void do_deactivate();
+            // Actions.
+            virtual void do_activate();
+            virtual void do_start();
+            virtual void do_stop();
+            virtual void do_deactivate();
 
-  // Handlers.
-  virtual void handle_region(RegionService::Data& command);
-  virtual void handle_range(RangeService::Data& command);
+            // Handlers.
+            virtual void handle_region ( RegionService::Data &command );
+            virtual void handle_range ( RangeService::Data &command );
 
-private:
+        private:
 
-  const Parameters param_;
+            const Parameters param_;
 
-  bool send_sample(const uint16_t* depth, const uint16_t* confidence, int width, int height);
+            bool send_sample ( const uint16_t *depth, const uint16_t *confidence, int width, int height );
 
-  Publisher publisher_;
+            Publisher publisher_;
 
-  double max_depth_;
-  double min_depth_;
+            double max_depth_;
+            double min_depth_;
 
-  bool region_enabled_;
+            bool region_enabled_;
 
-  mutable BaslerToFWrapper* camera_;
-};
+            mutable BaslerToFWrapper *camera_;
+    };
 
 } // namespace i3ds
 
