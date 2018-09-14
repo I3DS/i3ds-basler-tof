@@ -105,7 +105,7 @@ i3ds::BaslerToFCamera::do_activate()
 
         camera_ = new BaslerToFWrapper ( param_.camera_name, operation );
         if (
-            ( camera_->Width() == camera_->SensogetMaxDepthrWidth() ) &&
+            ( camera_->Width() == camera_->SensorWidth() ) &&
             ( camera_->Height() == camera_->SensorHeight() ) &&
             ( camera_->OffsetX() == 0 ) &&
             ( camera_->OffsetY() == 0 )
