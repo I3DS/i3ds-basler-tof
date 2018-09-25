@@ -304,6 +304,18 @@ BaslerToFWrapper::getTemperature ()
 {
     return getFloat ( "DeviceTemperature" );
 }
+
+
+std::string
+BaslerToFWrapper::GetDeviceModelName()
+{
+    GenApi::CStringPtr ptr1 ( camera_.GetParameter ( "DeviceModelName" ) );
+    gcstring interfaceDisplayName = ptr1->GetValue();
+    BOOST_LOG_TRIVIAL ( info ) << interfaceDisplayName;
+    return interfaceDisplayName.c_str();
+}
+
+
 void
 BaslerToFWrapper::Start()
 {

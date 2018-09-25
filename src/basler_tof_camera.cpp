@@ -132,6 +132,7 @@ i3ds::BaslerToFCamera::do_activate()
         {
             region_enabled_ = true;
         }
+        set_device_name ( camera_->GetDeviceModelName() );
     }
     catch ( const GenICam::GenericException &e )
     {
