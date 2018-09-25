@@ -298,6 +298,12 @@ BaslerToFWrapper::setMinDepth ( int64_t depth )
     setInt ( "DepthMin", depth );
 }
 
+/// Temperature in celcius
+float
+BaslerToFWrapper::getTemperature ()
+{
+    return getFloat ( "DeviceTemperature" );
+}
 void
 BaslerToFWrapper::Start()
 {

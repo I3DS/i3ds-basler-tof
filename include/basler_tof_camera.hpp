@@ -49,6 +49,7 @@ namespace i3ds
 
             virtual bool is_sampling_supported ( SampleCommand sample );
 
+            double temperature() const;
         protected:
 
             // Actions.

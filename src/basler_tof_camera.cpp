@@ -92,6 +92,14 @@ i3ds::BaslerToFCamera::range_max_depth_upper_limit() const
 }
 
 
+/// Sensorboard Temperature converted to Kelvin
+double
+i3ds::BaslerToFCamera::temperature () const
+{
+    return camera_->getTemperature () + 273.15;
+}
+
+
 void
 i3ds::BaslerToFCamera::do_activate()
 {
