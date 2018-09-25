@@ -213,13 +213,13 @@ BaslerToFWrapper::setOffsetY ( int64_t value )
 int64_t
 BaslerToFWrapper::SensorWidth()
 {
-    return maxInt ( "WidthMax" );
+    return getInt ( "WidthMax" );
 }
 
 int64_t
 BaslerToFWrapper::SensorHeight()
 {
-    return maxInt ( "HeightMax" );
+    return getInt ( "HeightMax" );
 }
 
 float
