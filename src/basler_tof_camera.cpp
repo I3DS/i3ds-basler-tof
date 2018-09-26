@@ -32,7 +32,6 @@ i3ds::BaslerToFCamera::BaslerToFCamera ( Context::Ptr context, NodeID node, Para
 
     BOOST_LOG_TRIVIAL ( info ) << "BaslerToFCamera::BaslerToFCamera()";
 
-    region_enabled_ = false;
     camera_ = nullptr;
 }
 
@@ -44,10 +43,25 @@ i3ds::BaslerToFCamera::~BaslerToFCamera()
     }
 }
 
+
+
+/// Realtime check of region_enabled. Avoiding updating an variable all the time. Safer for consistencity
 bool
 i3ds::BaslerToFCamera::region_enabled() const
 {
-    return region_enabled_;
+
+  if ( ( camera_->Width() == camera_->SensorWidth() ) &&
+       ( camera_->Height() == camera_->SensorHeight() ) &&
+       ( camera_->OffsetX() == 0 ) &&
+       ( camera_->OffsetY() == 0 )
+     )
+      {
+        return false;
+      }
+  else
+      {
+         return true;
+       }
 }
 
 PlanarRegion
@@ -112,27 +126,9 @@ i3ds::BaslerToFCamera::do_activate()
         auto operation = std::bind ( &i3ds::BaslerToFCamera::send_sample, this, _1, _2, _3, _4 );
 
         camera_ = new BaslerToFWrapper ( param_.camera_name, operation );
-        if (
-            ( camera_->Width() == camera_->SensorWidth() ) &&
-            ( camera_->Height() == camera_->SensorHeight() ) &&
-            ( camera_->OffsetX() == 0 ) &&
-            ( camera_->OffsetY() == 0 )
-            /*
-            (camera_->Width.GetValue() == camera_->SensorWidth.GetValue()) &&
-            (camera_->Height.GetValue() == camera_->SensorHeight.GetValue()) &&
-            (camera_->OffsetX.GetValue() == 0 ) &&
-            (camera_->OffsetY.GetValue() == 0 )
-            */
-
-        )
-        {
-            region_enabled_ = false;
-        }
-        else
-        {
-            region_enabled_ = true;
-        }
+        BOOST_LOG_TRIVIAL ( info ) << "region_enabled() " << region_enabled();
         set_device_name ( camera_->GetDeviceModelName() );
+
     }
     catch ( const GenICam::GenericException &e )
     {
@@ -276,8 +272,6 @@ i3ds::BaslerToFCamera::handle_region ( RegionService::Data &command )
         camera_->setWidth ( camera_->SensorWidth() );
         camera_->setHeight ( camera_->SensorHeight() );
     }
-
-    region_enabled_ = command.request.enable;
 }
 
 void
