@@ -50,8 +50,8 @@ namespace i3ds
             virtual bool is_sampling_supported ( SampleCommand sample );
 
             double temperature() const;
-        protected:
 
+        protected:
             // Actions.
             virtual void do_activate();
             virtual void do_start();
@@ -72,8 +72,6 @@ namespace i3ds
 
             double max_depth_;
             double min_depth_;
-
-            bool region_enabled_;
 
             mutable BaslerToFWrapper *camera_;
     };
