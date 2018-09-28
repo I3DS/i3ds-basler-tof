@@ -43,9 +43,11 @@ BaslerToFWrapper::BaslerToFWrapper ( std::string camera_name, Operation operatio
 //#define HDR // vs Standard
 #ifndef HDR
         setEnum ( "ProcessingMode", "Standard" );
+        BOOST_LOG_TRIVIAL ( info ) << "ProcessingMode: Standard";
 #else // single
         // TODO: Add option for HDR?
         setEnum ( "ProcessingMode", "Hdr" )
+        BOOST_LOG_TRIVIAL ( info ) << "ProcessingMode: Hdr";
 #endif
 
         setEnum ( "ExposureAuto", "Continuous" );

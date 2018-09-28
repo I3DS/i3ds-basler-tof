@@ -194,6 +194,11 @@ i3ds::BaslerToFCamera::is_sampling_supported ( SampleCommand sample )
     const float rate = 1.0e6 / sample.period;
     const float max_rate = camera_->maxTriggerRate();
     const float min_rate = camera_->minTriggerRate();
+    BOOST_LOG_TRIVIAL ( trace ) << "rate() " << rate;
+    BOOST_LOG_TRIVIAL ( trace ) << "max_rate " << max_rate;
+    BOOST_LOG_TRIVIAL ( trace ) << "min_rate " << min_rate;
+    BOOST_LOG_TRIVIAL ( trace ) << "(min_rate <= rate && rate <= max_rate) " << ((min_rate <= rate) && (rate <= max_rate));
+
 
     return min_rate <= rate && rate <= max_rate;
 }
