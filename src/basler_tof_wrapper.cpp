@@ -322,6 +322,10 @@ void
 BaslerToFWrapper::Start()
 {
     running_ = true;
+    timeout_counter_ = 0;
+    error_counter_ = 0;
+    error_flagged_ = false;
+
     sampler_ = std::thread ( &BaslerToFWrapper::SampleLoop, this );
 }
 
