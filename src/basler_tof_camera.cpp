@@ -20,8 +20,10 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
-
 namespace logging = boost::log;
+
+
+
 
 i3ds::BaslerToFCamera::BaslerToFCamera ( Context::Ptr context, NodeID node, Parameters param )
     : ToFCamera ( node ),
@@ -33,6 +35,7 @@ i3ds::BaslerToFCamera::BaslerToFCamera ( Context::Ptr context, NodeID node, Para
     BOOST_LOG_TRIVIAL ( info ) << "BaslerToFCamera::BaslerToFCamera()";
 
     camera_ = nullptr;
+
 }
 
 i3ds::BaslerToFCamera::~BaslerToFCamera()
@@ -119,7 +122,7 @@ i3ds::BaslerToFCamera::range_max_depth() const
 double
 i3ds::BaslerToFCamera::range_min_depth_lower_limit() const
 {
-    return 1.0e-3 * ( double ) camera_->getMinDepth_lower_limit();
+  return 1.0e-3 * ( double ) camera_->getMinDepth_lower_limit();
 }
 
 double
