@@ -223,7 +223,8 @@ i3ds::BaslerToFCamera::do_deactivate()
 bool
 i3ds::BaslerToFCamera::is_sampling_supported ( SampleCommand sample )
 {
-
+  bool retval = false;
+  try {
     if ( !param_.free_running )
     {
         throw i3ds::CommandError ( error_other, "Period is not relevant in free-running mode" );
