@@ -179,22 +179,28 @@ void
 i3ds::BaslerToFCamera::do_start()
 {
     BOOST_LOG_TRIVIAL ( info ) << "do_start()";
+    try {
 
-    min_depth_ = range_min_depth();
-    max_depth_ = range_max_depth();
+      min_depth_ = range_min_depth();
+      max_depth_ = range_max_depth();
 
-    if ( param_.free_running )
-    {
-        camera_->setTriggerMode ( false );
-        camera_->setTriggerRate ( 1.0e6 / period() );
-    }
-    else
-    {
-        camera_->setTriggerMode ( true );
-        camera_->setTriggerSource ( "Line1" );
-    }
+      if ( param_.free_running )
+      {
+	  camera_->setTriggerMode ( false );
+	  camera_->setTriggerRate ( 1.0e6 / period() );
+      }
+      else
+      {
+	  camera_->setTriggerMode ( true );
+	  camera_->setTriggerSource ( "Line1" );
+      }
 
-    camera_->Start();
+      camera_->Start();
+    } catch ( const GenICam::GenericException &e )
+     {
+	BOOST_LOG_TRIVIAL ( error ) << "do_start() problem communicating with hw";
+	set_error_state("Error communicating with ToF in do_start(): " + std::string ( e.what() ), false);
+      }
 }
 
 void
