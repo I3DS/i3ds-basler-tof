@@ -219,6 +219,11 @@ i3ds::BaslerToFCamera::do_deactivate()
 {
     BOOST_LOG_TRIVIAL ( info ) << "do_deactivate()";
 
+    // Only to do a join on sampling thread in case of failure to avoid exception
+    if ( is_failure() )
+      {
+	camera_->Stop();
+      }
     delete camera_;
     camera_ = nullptr;
 }
