@@ -369,6 +369,7 @@ bool
 i3ds::BaslerToFCamera::send_sample ( const uint16_t *depth, const uint16_t *confidence, int width, int height )
 {
     BOOST_LOG_TRIVIAL ( info ) << "BaslerToFCamera::send_sample()";
+    BOOST_LOG_TRIVIAL ( info ) << "ProcessingMode " << camera_->getEnum ( "ProcessingMode");
 
     const int size = width * height;
 
