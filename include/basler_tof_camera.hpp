@@ -33,6 +33,8 @@ namespace i3ds
                 bool free_running;
             };
 
+
+
             BaslerToFCamera ( Context::Ptr context, NodeID id, Parameters param );
             virtual ~BaslerToFCamera();
 
@@ -50,6 +52,8 @@ namespace i3ds
             virtual bool is_sampling_supported ( SampleCommand sample );
 
             double temperature() const;
+
+            void set_error_state(const std::string & error_message, bool dont_throw) const;
 
         protected:
             // Actions.
