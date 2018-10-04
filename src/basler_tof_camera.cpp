@@ -48,7 +48,7 @@ i3ds::BaslerToFCamera::~BaslerToFCamera()
 
 
 void
-i3ds::BaslerToFCamera::set_error_state(const std::string &error_message, const bool dont_throw = false ) const
+i3ds::BaslerToFCamera::set_error_state(const std::string &error_message, const bool dont_throw = false )
 {
   BOOST_LOG_TRIVIAL ( error ) << "Error message: " << error_message;
 
@@ -62,7 +62,7 @@ i3ds::BaslerToFCamera::set_error_state(const std::string &error_message, const b
 
 /// Realtime check of region_enabled. Avoiding updating an variable all the time. Safer for consistencity
 bool
-i3ds::BaslerToFCamera::region_enabled() const
+i3ds::BaslerToFCamera::region_enabled()
 {
   bool retval = false;
   try {
@@ -87,7 +87,7 @@ i3ds::BaslerToFCamera::region_enabled() const
 }
 
 PlanarRegion
-i3ds::BaslerToFCamera::region() const
+i3ds::BaslerToFCamera::region()
 {
   PlanarRegion region;
   BOOST_LOG_TRIVIAL ( info ) << "Check region";
@@ -134,7 +134,7 @@ i3ds::BaslerToFCamera::range_max_depth_upper_limit() const
 
 /// Sensorboard Temperature converted to Kelvin
 double
-i3ds::BaslerToFCamera::temperature () const
+i3ds::BaslerToFCamera::temperature ()
 {
   double retval = 0.0;
   try

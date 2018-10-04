@@ -39,8 +39,8 @@ namespace i3ds
             virtual ~BaslerToFCamera();
 
             // Getters.
-            virtual bool region_enabled() const;
-            virtual PlanarRegion region() const;
+            virtual bool region_enabled();
+            virtual PlanarRegion region();
 
             virtual double range_min_depth() const;
             virtual double range_max_depth() const;
@@ -51,9 +51,9 @@ namespace i3ds
 
             virtual bool is_sampling_supported ( SampleCommand sample );
 
-            double temperature() const;
+            double temperature();
 
-            void set_error_state(const std::string & error_message, bool dont_throw) const;
+            void set_error_state(const std::string & error_message, bool dont_throw);
 
         protected:
             // Actions.
