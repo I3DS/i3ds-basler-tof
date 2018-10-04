@@ -403,11 +403,16 @@ BaslerToFWrapper::HandleResult ( GrabResult result, BufferParts parts )
         const uint16_t *depth = ( uint16_t * ) parts[0].pData;
         const uint16_t *confidence = ( uint16_t * ) parts[1].pData;
 
-        if ( parts[0].partType != Range || parts[1].partType != Confidence )
-        {
-            BOOST_LOG_TRIVIAL ( info ) << "Invalid configuration of measurement";
-            throw std::logic_error ( "Invalid configuration of measurement" );
-        }
+	if ( parts[0].partType != Range || parts[1].partType != Confidence )
+	  {
+	    BOOST_LOG_TRIVIAL ( error ) << "Invalid configuration of measurement";
+	    throw std::logic_error ( "Invalid configuration of measurement" );
+	  }
+	timeout_counter_ = 0;
+	error_counter_ = 0;
+
+	operation_ ( depth, confidence, width, height );
+      }
 
 
         operation_ ( depth, confidence, width, height );
