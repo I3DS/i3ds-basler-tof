@@ -356,8 +356,13 @@ i3ds::BaslerToFCamera::handle_range ( RangeService::Data &command )
 	    throw i3ds::CommandError ( error_value, "Maximum depth must be larger than minimum depth" );
 	}
 
-    camera_->setMinDepth ( ( int64_t ) ( command.request.min_depth * 1000 ) );
-    camera_->setMaxDepth ( ( int64_t ) ( command.request.max_depth * 1000 ) );
+      camera_->setMinDepth ( ( int64_t ) ( command.request.min_depth * 1000 ) );
+      camera_->setMaxDepth ( ( int64_t ) ( command.request.max_depth * 1000 ) );
+    } catch ( const GenICam::GenericException &e )
+      {
+	BOOST_LOG_TRIVIAL ( error ) << "handle_range() problem communicating with hw";
+	set_error_state("Error communicating with ToF in handle_range(): " + std::string ( e.what() ) );
+      }
 }
 
 bool
