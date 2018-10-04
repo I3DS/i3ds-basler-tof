@@ -23,8 +23,8 @@ using namespace GenTLConsumerImplHelper;
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 
-BaslerToFWrapper::BaslerToFWrapper ( std::string camera_name, Operation operation )
-    : operation_ ( operation )
+BaslerToFWrapper::BaslerToFWrapper ( std::string camera_name, Operation operation, Error_signaler error_signaler )
+    : operation_ ( operation ), error_signaler_( error_signaler )
 {
     setenv ( "GENICAM_GENTL64_PATH", GENICAM_GENTL64_PATH, 1 );
 

@@ -74,13 +74,14 @@ class BaslerToFWrapper
 
         std::string GetDeviceModelName();
 
-    private:
+
 
         const Operation operation_;
+        const Error_signaler error_signaler_;
 
         std::string getEnum ( const char *name );
         void setEnum ( const char *name, std::string value );
-
+    private:
         int64_t getInt ( const char *name );
         int64_t maxInt ( const char *name );
         int64_t minInt ( const char *name );
@@ -95,6 +96,7 @@ class BaslerToFWrapper
 
         bool HandleResult ( GrabResult result, BufferParts parts );
         void SampleLoop();
+        void set_error_status ( const std::string  st);
 
         CToFCamera camera_;
 
