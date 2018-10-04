@@ -337,23 +337,24 @@ void
 i3ds::BaslerToFCamera::handle_range ( RangeService::Data &command )
 {
     BOOST_LOG_TRIVIAL ( info ) << "handle_range()";
+    try {
+      check_standby();
 
-    check_standby();
+      // Check input parameters
+      if ( command.request.min_depth < range_min_depth_lower_limit() )
+	{
+	    throw i3ds::CommandError ( error_value, "Minimum depth must be greater than " + std::to_string ( range_min_depth_lower_limit() ) + "[m]" );
+	}
 
-    // Check input parameters
-    if ( command.request.min_depth < range_min_depth_lower_limit() )
-    {
-        throw i3ds::CommandError ( error_value, "Minimum depth must be greater than " + std::to_string ( range_min_depth_lower_limit() ) + "[m]" );
-    }
+      if ( command.request.max_depth > range_max_depth_upper_limit() )
+	{
+	    throw i3ds::CommandError ( error_value, "Maximum depth must be less than " + std::to_string ( range_max_depth_upper_limit() ) + "[m]" );
+	}
 
-    if ( command.request.max_depth > range_max_depth_upper_limit() )
-    {
-        throw i3ds::CommandError ( error_value, "Maximum depth must be less than " + std::to_string ( range_max_depth_upper_limit() ) + "[m]" );
-    }
-    if ( command.request.min_depth > command.request.max_depth )
-    {
-        throw i3ds::CommandError ( error_value, "Maximum depth must be larger than minimum depth" );
-    }
+      if ( command.request.min_depth > command.request.max_depth )
+	{
+	    throw i3ds::CommandError ( error_value, "Maximum depth must be larger than minimum depth" );
+	}
 
     camera_->setMinDepth ( ( int64_t ) ( command.request.min_depth * 1000 ) );
     camera_->setMaxDepth ( ( int64_t ) ( command.request.max_depth * 1000 ) );
