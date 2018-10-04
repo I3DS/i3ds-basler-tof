@@ -239,7 +239,13 @@ i3ds::BaslerToFCamera::is_sampling_supported ( SampleCommand sample )
     BOOST_LOG_TRIVIAL ( trace ) << "(min_rate <= rate && rate <= max_rate) " << ((min_rate <= rate) && (rate <= max_rate));
 
 
-    return min_rate <= rate && rate <= max_rate;
+    retval = min_rate <= rate && rate <= max_rate;
+  } catch ( const GenICam::GenericException &e )
+      {
+	BOOST_LOG_TRIVIAL ( error ) << "is_sampling_supported() problem communicating with hw";
+	set_error_state("Error communicating with ToF in is_sampling_supported(): " + std::string ( e.what() ));
+       }
+    return retval;
 }
 
 void
