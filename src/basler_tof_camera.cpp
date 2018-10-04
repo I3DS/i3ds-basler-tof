@@ -44,40 +44,63 @@ i3ds::BaslerToFCamera::~BaslerToFCamera()
 }
 
 
+void
+i3ds::BaslerToFCamera::set_error_state(const std::string &error_message, const bool dont_throw = false ) const
+{
+  BOOST_LOG_TRIVIAL ( error ) << "Error message: " << error_message;
+
+  set_failure();
+  if ( !dont_throw )
+    {
+      throw i3ds::CommandError ( error_other, error_message );
+    }
+}
+
 
 /// Realtime check of region_enabled. Avoiding updating an variable all the time. Safer for consistencity
 bool
 i3ds::BaslerToFCamera::region_enabled() const
 {
-
-  if ( ( camera_->Width() == camera_->SensorWidth() ) &&
-       ( camera_->Height() == camera_->SensorHeight() ) &&
-       ( camera_->OffsetX() == 0 ) &&
-       ( camera_->OffsetY() == 0 )
-     )
-      {
-        return false;
-      }
-  else
-      {
-         return true;
-       }
+  bool retval = false;
+  try {
+    if ( ( camera_->Width() == camera_->SensorWidth() ) &&
+	 ( camera_->Height() == camera_->SensorHeight() ) &&
+	 ( camera_->OffsetX() == 0 ) &&
+	 ( camera_->OffsetY() == 0 )
+       )
+	{
+	  retval = false;
+	}
+    else
+	 {
+	  retval = true;
+	 }
+    } catch ( const GenICam::GenericException &e )
+       {
+	    BOOST_LOG_TRIVIAL ( error ) << "region() problem communicating with hw";
+	    set_error_state("Error communicating with ToF in region_enabled(): " + std::string ( e.what() ) );
+	}
+    return retval;
 }
 
 PlanarRegion
 i3ds::BaslerToFCamera::region() const
 {
-    PlanarRegion region;
-    BOOST_LOG_TRIVIAL ( info ) << "Check region";
-    region.offset_x = ( T_UInt16 ) camera_->OffsetX();
-    region.offset_y = ( T_UInt16 ) camera_->OffsetY();
-    region.size_x = ( T_UInt16 ) camera_->Width();
-    region.size_y = ( T_UInt16 ) camera_->Height();
-
-    BOOST_LOG_TRIVIAL ( info ) << "Check region"  <<  region.offset_x ;
-
+  PlanarRegion region;
+  BOOST_LOG_TRIVIAL ( info ) << "Check region";
+  try {
+	region.offset_x = ( T_UInt16 ) camera_->OffsetX();
+	region.offset_y = ( T_UInt16 ) camera_->OffsetY();
+	region.size_x = ( T_UInt16 ) camera_->Width();
+	region.size_y = ( T_UInt16 ) camera_->Height();
+    } catch ( const GenICam::GenericException &e )
+	 {
+	      BOOST_LOG_TRIVIAL ( error ) << "region() problem communicating with hw";
+	      set_error_state( "Error communicating with ToF in region(): " + std::string ( e.what() ));
+	  }
     return region;
 }
+
 
 double
 i3ds::BaslerToFCamera::range_min_depth() const
