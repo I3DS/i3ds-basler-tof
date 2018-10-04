@@ -252,76 +252,85 @@ void
 i3ds::BaslerToFCamera::handle_region ( RegionService::Data &command )
 {
     BOOST_LOG_TRIVIAL ( info ) << "handle_region()";
+    try
+      {
+	check_standby();
 
-    check_standby();
+	if ( command.request.enable )
+	  {
+	      PlanarRegion region = command.request.region;
 
-    if ( command.request.enable )
-    {
-        PlanarRegion region = command.request.region;
-
-        // Parameter checks
-        if ( ( region.size_x % 2 ) || ( region.size_y % 2 ) ||
-                ( region.offset_x % 2 ) || ( region.offset_y % 2 )
-           )
-        {
-            throw i3ds::CommandError ( error_value, "Region sizes and offsets have to be a even number." );
-        }
+	      // Parameter checks
+	      if ( ( region.size_x % 2 ) || ( region.size_y % 2 ) ||
+		      ( region.offset_x % 2 ) || ( region.offset_y % 2 )
+		 )
+	      {
+		  throw i3ds::CommandError ( error_value, "Region sizes and offsets have to be a even number." );
+	      }
 
 
 
-        if ( ( region.size_x == 0 ) || ( region.size_y == 0 ) )
-        {
-            throw i3ds::CommandError ( error_value, "Region size (width or height) can not be zero" );
-        }
+	      if ( ( region.size_x == 0 ) || ( region.size_y == 0 ) )
+	      {
+		  throw i3ds::CommandError ( error_value, "Region size (width or height) can not be zero" );
+	      }
 
-        if ( ( region.size_x + region.offset_x ) > ( ( unsigned ) camera_->SensorWidth() ) )
-        {
-            throw i3ds::CommandError ( error_value, "Impossible condition: (Region width + offset_x) > (Maximum width of sensor) => " +
-                                       std::to_string ( ( region.size_x + region.offset_x ) ) +
-                                       " > " +
-                                       std::to_string ( camera_->SensorWidth() )
-                                     );
-        }
+	      if ( ( region.size_x + region.offset_x ) > ( ( unsigned ) camera_->SensorWidth() ) )
+	      {
+		  throw i3ds::CommandError ( error_value, "Impossible condition: (Region width + offset_x) > (Maximum width of sensor) => " +
+					     std::to_string ( ( region.size_x + region.offset_x ) ) +
+					     " > " +
+					     std::to_string ( camera_->SensorWidth() )
+					   );
+	      }
 
-        if ( ( region.size_y + region.offset_y ) > ( ( unsigned ) camera_->SensorHeight() ) )
-        {
-            throw i3ds::CommandError ( error_value, "Imposible condition (Region height + offset_y) > (Maximum height of sensor) => " +
-                                       std::to_string ( ( region.size_y + region.offset_y ) ) +
-                                       " > " +
-                                       std::to_string ( camera_->SensorHeight() )
-                                     );
-        }
+	      if ( ( region.size_y + region.offset_y ) > ( ( unsigned ) camera_->SensorHeight() ) )
+	      {
+		  throw i3ds::CommandError ( error_value, "Imposible condition (Region height + offset_y) > (Maximum height of sensor) => " +
+					     std::to_string ( ( region.size_y + region.offset_y ) ) +
+					     " > " +
+					     std::to_string ( camera_->SensorHeight() )
+					   );
+	      }
 
-        // Decrease first, increase afterwards
-        if ( region.size_x > ( ( unsigned ) camera_->Width() ) )
-        {
-            camera_->setOffsetX ( region.offset_x );
-            camera_->setWidth ( region.size_x );
-        }
-        else
-        {
-            camera_->setWidth ( region.size_x );
-            camera_->setOffsetX ( region.offset_x );
-        }
+	      // Decrease first, increase afterwards
+	      if ( region.size_x > ( ( unsigned ) camera_->Width() ) )
+	      {
+		  camera_->setOffsetX ( region.offset_x );
+		  camera_->setWidth ( region.size_x );
+	      }
+	      else
+	      {
+		  camera_->setWidth ( region.size_x );
+		  camera_->setOffsetX ( region.offset_x );
+	      }
 
-        if ( region.size_y > ( ( unsigned ) camera_->Height() ) )
-        {
-            camera_->setOffsetY ( region.offset_y );
-            camera_->setHeight ( region.size_y );
-        }
-        else
-        {
-            camera_->setHeight ( region.size_y );
-            camera_->setOffsetX ( region.offset_y );
-        }
-    }
-    else
-    {
-        camera_->setOffsetX ( 0 );
-        camera_->setOffsetY ( 0 );
-        camera_->setWidth ( camera_->SensorWidth() );
-        camera_->setHeight ( camera_->SensorHeight() );
-    }
+	      if ( region.size_y > ( ( unsigned ) camera_->Height() ) )
+	      {
+		  camera_->setOffsetY ( region.offset_y );
+		  camera_->setHeight ( region.size_y );
+	      }
+	      else
+	      {
+		  camera_->setHeight ( region.size_y );
+		  camera_->setOffsetX ( region.offset_y );
+	      }
+	  }
+	  else
+	  {
+	      camera_->setOffsetX ( 0 );
+	      camera_->setOffsetY ( 0 );
+	      camera_->setWidth ( camera_->SensorWidth() );
+	      camera_->setHeight ( camera_->SensorHeight() );
+	  }
+      }
+    catch ( const GenICam::GenericException &e )
+      {
+	BOOST_LOG_TRIVIAL ( error ) << "handle_region() problem communicating with hw";
+
+	set_error_state("Error communicating with ToF in handle_region(): " + std::string ( e.what() ) );
+       }
+
 }
 
 void
