@@ -384,11 +384,17 @@ BaslerToFWrapper::HandleResult ( GrabResult result, BufferParts parts )
       }
 
     if ( result.status == GrabResult::Timeout )
-    {
-        BOOST_LOG_TRIVIAL ( info ) << "Timeout waiting for image";
-        return running_; // Just continue and wait for another image.
-    }
-
+      {
+	BOOST_LOG_TRIVIAL ( info ) << "Timeout waiting for image";
+	timeout_counter_ ++;
+	if (timeout_counter_ > 10)
+	  {
+	    BOOST_LOG_TRIVIAL ( error ) << "More than 10 error in sampling loop. Going to error state";
+	    set_error_status("Camera reporting: Not connected. Going to error state.");
+	    running_ = false;
+	  }
+	return running_; // Just continue and wait for another image.
+      }
 
     if ( result.status == GrabResult::Ok )
     {
