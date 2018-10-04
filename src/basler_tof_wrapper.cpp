@@ -71,6 +71,8 @@ BaslerToFWrapper::BaslerToFWrapper ( std::string camera_name, Operation operatio
 
 }
 
+
+
 BaslerToFWrapper::~BaslerToFWrapper()
 {
     if ( camera_.IsOpen() )
@@ -261,6 +263,7 @@ BaslerToFWrapper::setTriggerSource ( std::string line )
 }
 
 int64_t
+
 BaslerToFWrapper::getMaxDepth()
 {
     return getInt ( "DepthMax" );
@@ -373,7 +376,7 @@ BaslerToFWrapper::set_error_status(const std::string error_message)
 bool
 BaslerToFWrapper::HandleResult ( GrabResult result, BufferParts parts )
 {
-    BOOST_LOG_TRIVIAL ( info ) << "HandleResult()";
+    BOOST_LOG_TRIVIAL ( trace ) << "HandleResult()";
 
     if ( !camera_.IsConnected() )
       {
@@ -397,11 +400,11 @@ BaslerToFWrapper::HandleResult ( GrabResult result, BufferParts parts )
       }
 
     if ( result.status == GrabResult::Ok )
-    {
-        const int width = ( int ) parts[0].width;
-        const int height = ( int ) parts[0].height;
-        const uint16_t *depth = ( uint16_t * ) parts[0].pData;
-        const uint16_t *confidence = ( uint16_t * ) parts[1].pData;
+      {
+	const int width = ( int ) parts[0].width;
+	const int height = ( int ) parts[0].height;
+	const uint16_t *depth = ( uint16_t * ) parts[0].pData;
+	const uint16_t *confidence = ( uint16_t * ) parts[1].pData;
 
 	if ( parts[0].partType != Range || parts[1].partType != Confidence )
 	  {
@@ -415,7 +418,5 @@ BaslerToFWrapper::HandleResult ( GrabResult result, BufferParts parts )
       }
 
 
-        operation_ ( depth, confidence, width, height );
-    }
     return running_;
 }
