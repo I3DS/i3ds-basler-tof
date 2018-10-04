@@ -332,19 +332,21 @@ BaslerToFWrapper::Start()
 void
 BaslerToFWrapper::Stop()
 {
-    running_ = false;
+  running_ = false;
 
-    if ( sampler_.joinable() )
+  if ( sampler_.joinable() )
     {
-        sampler_.join();
+      sampler_.join();
     }
 }
+
 
 void
 BaslerToFWrapper::SampleLoop()
 {
   try {
     // Start grabbing with buffer size 15 and 500 ms timeout.
+    error_flagged_ = false;
     camera_.GrabContinuous ( 15, 500, this, &BaslerToFWrapper::HandleResult );
     if( error_flagged_ )
       {
