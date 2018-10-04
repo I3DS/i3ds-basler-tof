@@ -357,6 +357,17 @@ BaslerToFWrapper::SampleLoop()
   {
       BOOST_LOG_TRIVIAL ( error ) <<  "Exception error message: " << e.what();
   }
+
+
+}
+
+void
+BaslerToFWrapper::set_error_status(const std::string error_message)
+{
+  BOOST_LOG_TRIVIAL ( error ) << "set_error_status() in wrapper";
+  BOOST_LOG_TRIVIAL ( error ) <<  "Error message: " << error_message;
+  error_flagged_ = true;
+  flagged_error_message_ = error_message;
 }
 
 bool
