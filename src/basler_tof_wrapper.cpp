@@ -375,6 +375,13 @@ BaslerToFWrapper::HandleResult ( GrabResult result, BufferParts parts )
 {
     BOOST_LOG_TRIVIAL ( info ) << "HandleResult()";
 
+    if ( !camera_.IsConnected() )
+      {
+	BOOST_LOG_TRIVIAL ( error ) << "Camera reporting: Not connected. Going to error state.";
+	set_error_status("Camera reporting: Not connected. Going to error state.");
+	running_ = false;
+	return running_;
+      }
 
     if ( result.status == GrabResult::Timeout )
     {
