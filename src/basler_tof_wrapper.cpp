@@ -343,8 +343,18 @@ BaslerToFWrapper::Stop()
 void
 BaslerToFWrapper::SampleLoop()
 {
+  try {
     // Start grabbing with buffer size 15 and 500 ms timeout.
     camera_.GrabContinuous ( 15, 500, this, &BaslerToFWrapper::HandleResult );
+    if( error_flagged_ )
+      {
+	error_signaler_ (flagged_error_message_, true);
+	error_flagged_ = false;
+      }
+  }catch ( const GenICam::GenericException &e )
+  {
+      BOOST_LOG_TRIVIAL ( error ) <<  "Exception error message: " << e.what();
+  }
 }
 
 bool
