@@ -21,13 +21,21 @@ typedef std::function<bool ( const uint16_t *depth,
                              int width,
                              int height ) > Operation;
 
+
+// Used to signal upwards that it is an error and make the system go to failure state
+typedef std::function<void ( const std::string error_message, const bool dont_throw ) > Error_signaler;
+
+
+
+
+
 using namespace GenTLConsumerImplHelper;
 
 class BaslerToFWrapper
 {
     public:
 
-        BaslerToFWrapper ( std::string camera_name, Operation operation );
+        BaslerToFWrapper ( std::string camera_name, Operation operation, Error_signaler error_signaler );
         ~BaslerToFWrapper();
 
         void Start();
