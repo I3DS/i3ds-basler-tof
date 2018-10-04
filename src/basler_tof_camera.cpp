@@ -133,7 +133,16 @@ i3ds::BaslerToFCamera::range_max_depth_upper_limit() const
 double
 i3ds::BaslerToFCamera::temperature () const
 {
-    return camera_->getTemperature () + 273.15;
+  double retval = 0.0;
+  try
+    {
+      retval = camera_->getTemperature () + 273.15;
+    } catch ( const GenICam::GenericException &e )
+      {
+	  BOOST_LOG_TRIVIAL ( error ) << "temperature() problem communicating with hw";
+	  set_error_state("Error communicating with ToF in temperature(): " + std::string ( e.what() ));
+       }
+    return retval;
 }
 
 
