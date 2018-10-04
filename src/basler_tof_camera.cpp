@@ -160,7 +160,10 @@ i3ds::BaslerToFCamera::do_activate()
     {
         auto operation = std::bind ( &i3ds::BaslerToFCamera::send_sample, this, _1, _2, _3, _4 );
 
-        camera_ = new BaslerToFWrapper ( param_.camera_name, operation );
+        auto error_signaler = std::bind (&i3ds::BaslerToFCamera::set_error_state, this, _1, _2 );
+
+
+        camera_ = new BaslerToFWrapper ( param_.camera_name, operation, error_signaler );
         BOOST_LOG_TRIVIAL ( info ) << "region_enabled() " << region_enabled();
         set_device_name ( camera_->GetDeviceModelName() );
 
