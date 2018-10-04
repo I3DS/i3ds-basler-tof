@@ -102,6 +102,13 @@ class BaslerToFWrapper
 
         std::thread sampler_;
         bool running_;
+        int error_counter_;
+        int timeout_counter_;
+        bool error_flagged_;
+        std::string flagged_error_message_;
+
+
+
 };
 
 #endif
