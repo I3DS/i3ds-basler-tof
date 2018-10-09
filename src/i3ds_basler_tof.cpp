@@ -46,15 +46,21 @@ void signal_handler ( int signum )
 
 int main ( int argc, char **argv )
 {
-    unsigned int node_id;
+    unsigned int node_id, trigger_node_id;;
     i3ds::BaslerToFCamera::Parameters param;
+    bool free_running = false;
 
     po::options_description desc ( "Allowed camera control options" );
     desc.add_options()
     ( "help,h", "Produce this message" )
     ( "node,n", po::value<unsigned int> ( &node_id )->default_value ( 12 ), "Node ID of camera" )
-    ( "camera-name,c", po::value<std::string> ( &param.camera_name )->default_value ( "i3ds-basler-tof" ), "Connect via (UserDefinedName) of Camera" )
+    ( "camera-name,c", po::value<std::string> ( &param.camera_name )->default_value ( "i3ds-basler-tof" ), "Connect via (UserDefinedName) of camera" )
     ( "free-running,f", po::bool_switch ( &param.free_running )->default_value ( false ), "Free-running sampling. Default external triggered" )
+
+    ("trigger-node", po::value<unsigned int>(&trigger_node_id)->default_value(20), "Node ID of trigger service.")
+    ("trigger-source", po::value<TriggerGenerator>(&param.trigger_source)->default_value(1), "Trigger generator for ToF-camera.")
+    ("trigger-camera-output", po::value<TriggerOutput>(&param.camera_output)->default_value(2), "Trigger output for ToF-camera.")
+    ("trigger-camera-offset", po::value<TriggerOffset>(&param.camera_offset)->default_value(5000), "Trigger offset for ToF-camera (us).")
 
     ( "verbose,v", "Print verbose output" )
     ( "quiet,q", "Quiet ouput" )
@@ -76,9 +82,9 @@ int main ( int argc, char **argv )
     }
     else
         if ( !vm.count ( "verbose" ) )
-        {
-            logging::core::get()->set_filter ( logging::trivial::severity >= logging::trivial::info );
-        }
+	  {
+	      logging::core::get()->set_filter ( logging::trivial::severity >= logging::trivial::info );
+	  }
 
     po::notify ( vm );
 
@@ -87,6 +93,13 @@ int main ( int argc, char **argv )
     i3ds::Context::Ptr context = i3ds::Context::Create();;
 
     i3ds::Server server ( context );
+
+    i3ds::TriggerClient::Ptr trigger;
+
+    if (!free_running)
+      {
+	trigger = std::make_shared<i3ds::TriggerClient>(context, trigger_node_id);
+      }
 
     i3ds::BaslerToFCamera camera ( context, node_id, param );
 

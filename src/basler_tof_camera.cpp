@@ -25,16 +25,24 @@ namespace logging = boost::log;
 
 
 
-i3ds::BaslerToFCamera::BaslerToFCamera ( Context::Ptr context, NodeID node, Parameters param )
+i3ds::BaslerToFCamera::BaslerToFCamera ( Context::Ptr context, NodeID node, Parameters param, TriggerClient::Ptr trigger)
+ )
     : ToFCamera ( node ),
       param_ ( param ),
-      publisher_ ( context, node )
+      publisher_ ( context, node ),
+      trigger_(trigger)
 {
     using namespace std::placeholders;
 
     BOOST_LOG_TRIVIAL ( info ) << "BaslerToFCamera::BaslerToFCamera()";
 
     camera_ = nullptr;
+
+    if (trigger_)
+        {
+          // Only wait 100 ms for trigger service.
+          trigger_->set_timeout(100);
+        }
 
 }
 
@@ -166,6 +174,14 @@ i3ds::BaslerToFCamera::do_activate()
         camera_ = new BaslerToFWrapper ( param_.camera_name, operation, error_signaler );
         BOOST_LOG_TRIVIAL ( info ) << "region_enabled() " << region_enabled();
         set_device_name ( camera_->GetDeviceModelName() );
+        if (trigger_)
+	  {
+            set_trigger(param_.camera_output, param_.camera_offset);
+	  }
+	else
+	  {
+	    ;
+	  }
 
     }
     catch ( const GenICam::GenericException &e )
@@ -191,15 +207,19 @@ i3ds::BaslerToFCamera::do_start()
       max_depth_ = range_max_depth();
 
       if ( param_.free_running )
-      {
-	  camera_->setTriggerMode ( false );
-	  camera_->setTriggerRate ( 1.0e6 / period() );
-      }
+	{
+	    camera_->setTriggerMode ( false );
+	    camera_->setTriggerRate ( 1.0e6 / period() );
+	}
       else
-      {
-	  camera_->setTriggerMode ( true );
-	  camera_->setTriggerSource ( "Line1" );
-      }
+	{
+	    camera_->setTriggerMode ( true );
+	    camera_->setTriggerSource ( "Line1" );
+
+	    BOOST_LOG_TRIVIAL(info) << "Generator trigger_source:period " << param_.trigger_source << ":" << period();
+	    trigger_->set_generator(param_.trigger_source, period());
+	    trigger_->enable_channels(trigger_outputs_);
+	}
 
       camera_->Start();
     } catch ( const GenICam::GenericException &e )

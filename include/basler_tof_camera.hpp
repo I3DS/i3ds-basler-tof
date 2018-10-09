@@ -14,6 +14,7 @@
 #include <i3ds/topic.hpp>
 #include <i3ds/publisher.hpp>
 #include <i3ds/tof_camera_sensor.hpp>
+#include <i3ds/trigger_client.hpp>
 
 #include <memory>
 
@@ -31,6 +32,9 @@ namespace i3ds
             {
                 std::string camera_name;
                 bool free_running;
+                TriggerGenerator trigger_source;
+                TriggerOutput camera_output;
+                TriggerOffset camera_offset;
             };
 
 
@@ -78,6 +82,8 @@ namespace i3ds
             double min_depth_;
 
             mutable BaslerToFWrapper *camera_;
+            TriggerClient::Ptr trigger_;
+            TriggerOutputSet trigger_outputs_;
     };
 
 } // namespace i3ds
