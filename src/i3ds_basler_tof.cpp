@@ -70,7 +70,7 @@ int main ( int argc, char **argv )
         return -1;
     }
 
-    if ( vm.count ( "quite" ) )
+    if ( vm.count ( "quiet" ) )
     {
         logging::core::get()->set_filter ( logging::trivial::severity >= logging::trivial::warning );
     }
