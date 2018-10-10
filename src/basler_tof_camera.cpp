@@ -26,7 +26,6 @@ namespace logging = boost::log;
 
 
 i3ds::BaslerToFCamera::BaslerToFCamera ( Context::Ptr context, NodeID node, Parameters param, TriggerClient::Ptr trigger)
- )
     : ToFCamera ( node ),
       param_ ( param ),
       publisher_ ( context, node ),
