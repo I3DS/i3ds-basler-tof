@@ -39,7 +39,7 @@ namespace i3ds
 
 
 
-            BaslerToFCamera ( Context::Ptr context, NodeID id, Parameters param );
+            BaslerToFCamera ( Context::Ptr context, NodeID id, Parameters param, TriggerClient::Ptr trigger );
             virtual ~BaslerToFCamera();
 
             // Getters.
@@ -75,6 +75,9 @@ namespace i3ds
             const Parameters param_;
 
             bool send_sample ( const uint16_t *depth, const uint16_t *confidence, int width, int height );
+
+            void set_trigger(TriggerOutput channel, TriggerOffset offset);
+            void clear_trigger(TriggerOutput channel);
 
             Publisher publisher_;
 

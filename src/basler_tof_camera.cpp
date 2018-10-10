@@ -396,6 +396,23 @@ i3ds::BaslerToFCamera::handle_range ( RangeService::Data &command )
       }
 }
 
+void
+i3ds::BaslerToFCamera::set_trigger(TriggerOutput channel, TriggerOffset offset)
+{
+  // Set the channel to fire at offset with 100 us pulse.
+  trigger_->set_internal_channel(channel, param_.trigger_source, offset, 100, false);
+
+  // Enable the trigger on do_start.
+  trigger_outputs_.insert(channel);
+}
+
+void
+i3ds::BaslerToFCamera::clear_trigger(TriggerOutput channel)
+{
+  // Do not enable the trigger on do_start.
+  trigger_outputs_.erase(channel);
+}
+
 bool
 i3ds::BaslerToFCamera::send_sample ( const uint16_t *depth, const uint16_t *confidence, int width, int height )
 {

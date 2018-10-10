@@ -101,7 +101,7 @@ int main ( int argc, char **argv )
 	trigger = std::make_shared<i3ds::TriggerClient>(context, trigger_node_id);
       }
 
-    i3ds::BaslerToFCamera camera ( context, node_id, param );
+    i3ds::BaslerToFCamera camera ( context, node_id, param, trigger );
 
     camera.Attach ( server );
 
