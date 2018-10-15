@@ -31,10 +31,11 @@ namespace i3ds
             struct Parameters
             {
                 std::string camera_name;
-                bool free_running;
+                bool external_trigger;
                 TriggerGenerator trigger_source;
                 TriggerOutput camera_output;
                 TriggerOffset camera_offset;
+
             };
 
 

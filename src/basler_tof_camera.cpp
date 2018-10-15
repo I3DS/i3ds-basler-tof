@@ -205,20 +205,20 @@ i3ds::BaslerToFCamera::do_start()
       min_depth_ = range_min_depth();
       max_depth_ = range_max_depth();
 
-      if ( param_.free_running )
+      if ( param_.external_trigger )
 	{
-	    camera_->setTriggerMode ( false );
-	    camera_->setTriggerRate ( 1.0e6 / period() );
+	  camera_->setTriggerMode ( true );
+	  camera_->setTriggerSource ( "Line1" );
+	  BOOST_LOG_TRIVIAL(info) << "Generator trigger_source:period " << param_.trigger_source << ":" << period();
+	  trigger_->set_generator(param_.trigger_source, period());
+	  trigger_->enable_channels(trigger_outputs_);
 	}
       else
 	{
-	    camera_->setTriggerMode ( true );
-	    camera_->setTriggerSource ( "Line1" );
-
-	    BOOST_LOG_TRIVIAL(info) << "Generator trigger_source:period " << param_.trigger_source << ":" << period();
-	    trigger_->set_generator(param_.trigger_source, period());
-	    trigger_->enable_channels(trigger_outputs_);
+	  camera_->setTriggerMode ( false );
+	  camera_->setTriggerRate ( 1.0e6 / period() );
 	}
+
 
       camera_->Start();
     } catch ( const GenICam::GenericException &e )
@@ -255,10 +255,10 @@ i3ds::BaslerToFCamera::is_sampling_supported ( SampleCommand sample )
 {
   bool retval = false;
   try {
-    if ( !param_.free_running )
-    {
-        throw i3ds::CommandError ( error_other, "Period is not relevant in free-running mode" );
-    }
+    if ( param_.external_trigger )
+      {
+	throw i3ds::CommandError ( error_other, "Period is not relevant in for external trigger." );
+      }
 
     const float rate = 1.0e6 / sample.period;
     const float max_rate = camera_->maxTriggerRate();
