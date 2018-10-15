@@ -48,7 +48,6 @@ int main ( int argc, char **argv )
 {
     unsigned int node_id, trigger_node_id;;
     i3ds::BaslerToFCamera::Parameters param;
-    bool free_running = false;
 
     po::options_description desc ( "Allowed camera control options" );
     desc.add_options()
@@ -96,7 +95,7 @@ int main ( int argc, char **argv )
 
     i3ds::TriggerClient::Ptr trigger;
 
-    if (!free_running)
+    if (param.external_trigger)
       {
 	trigger = std::make_shared<i3ds::TriggerClient>(context, trigger_node_id);
       }
