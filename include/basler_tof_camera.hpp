@@ -24,71 +24,71 @@
 namespace i3ds
 {
 
-    class BaslerToFCamera : public ToFCamera
-    {
-        public:
+class BaslerToFCamera : public ToFCamera
+{
+public:
 
-            struct Parameters
-            {
-                std::string camera_name;
-                bool external_trigger;
-                TriggerGenerator trigger_source;
-                TriggerOutput camera_output;
-                TriggerOffset camera_offset;
+  struct Parameters
+  {
+    std::string camera_name;
+    bool external_trigger;
+    TriggerGenerator trigger_source;
+    TriggerOutput camera_output;
+    TriggerOffset camera_offset;
 
-            };
-
-
-
-            BaslerToFCamera ( Context::Ptr context, NodeID id, Parameters param, TriggerClient::Ptr trigger );
-            virtual ~BaslerToFCamera();
-
-            // Getters.
-            virtual bool region_enabled();
-            virtual PlanarRegion region();
-
-            virtual double range_min_depth() const;
-            virtual double range_max_depth() const;
-
-            virtual double range_min_depth_lower_limit() const;
-            virtual double range_max_depth_upper_limit() const;
+  };
 
 
-            virtual bool is_sampling_supported ( SampleCommand sample );
 
-            double temperature();
+  BaslerToFCamera ( Context::Ptr context, NodeID id, Parameters param, TriggerClient::Ptr trigger );
+  virtual ~BaslerToFCamera();
 
-            void set_error_state(const std::string & error_message, bool dont_throw);
+  // Getters.
+  virtual bool region_enabled();
+  virtual PlanarRegion region();
 
-        protected:
-            // Actions.
-            virtual void do_activate();
-            virtual void do_start();
-            virtual void do_stop();
-            virtual void do_deactivate();
+  virtual double range_min_depth() const;
+  virtual double range_max_depth() const;
 
-            // Handlers.
-            virtual void handle_region ( RegionService::Data &command );
-            virtual void handle_range ( RangeService::Data &command );
+  virtual double range_min_depth_lower_limit() const;
+  virtual double range_max_depth_upper_limit() const;
 
-        private:
 
-            const Parameters param_;
+  virtual bool is_sampling_supported ( SampleCommand sample );
 
-            bool send_sample ( const uint16_t *depth, const uint16_t *confidence, int width, int height );
+  double temperature();
 
-            void set_trigger(TriggerOutput channel, TriggerOffset offset);
-            void clear_trigger(TriggerOutput channel);
+  void set_error_state(const std::string & error_message, bool dont_throw);
 
-            Publisher publisher_;
+protected:
+  // Actions.
+  virtual void do_activate();
+  virtual void do_start();
+  virtual void do_stop();
+  virtual void do_deactivate();
 
-            double max_depth_;
-            double min_depth_;
+  // Handlers.
+  virtual void handle_region ( RegionService::Data &command );
+  virtual void handle_range ( RangeService::Data &command );
 
-            mutable BaslerToFWrapper *camera_;
-            TriggerClient::Ptr trigger_;
-            TriggerOutputSet trigger_outputs_;
-    };
+private:
+
+  const Parameters param_;
+
+  bool send_sample ( const uint16_t *depth, const uint16_t *confidence, int width, int height );
+
+  void set_trigger(TriggerOutput channel, TriggerOffset offset);
+  void clear_trigger(TriggerOutput channel);
+
+  Publisher publisher_;
+
+  double max_depth_;
+  double min_depth_;
+
+  mutable BaslerToFWrapper *camera_;
+  TriggerClient::Ptr trigger_;
+  TriggerOutputSet trigger_outputs_;
+};
 
 } // namespace i3ds
 
